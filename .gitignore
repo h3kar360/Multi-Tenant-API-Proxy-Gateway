@@ -1,0 +1,62 @@
+# CLIENT
+client/node_modules/
+client/dist/
+client/dist-ssr/
+client/*.local
+
+### Logs ###
+client/logs/
+client/*.log
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/pnpm-debug.log*
+client/lerna-debug.log*
+
+### Environments ###
+client/*.local
+
+# SERVER
+server/HELP.md
+server/target/
+server/.mvn/wrapper/maven-wrapper.jar
+!server/**/src/main/**/target/
+!server/**/src/test/**/target/
+
+### STS ###
+server/.apt_generated
+server/.classpath
+server/.factorypath
+server/.project
+server/.settings
+server/.springBeans
+server/.sts4-cache
+
+### NetBeans ###
+server/nbproject/private/
+server/nbbuild/
+server/dist/
+server/nbdist/
+server/.nb-gradle/
+server/build/
+!server/**/src/main/**/build/
+!server/**/src/test/**/build/
+
+# GLOBAL IDE AND CACHES
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+!.vscode/extensions.json
+
+### System Files ###
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
