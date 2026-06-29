@@ -1,4 +1,4 @@
-package org.h3kar360.entity;
+package org.h3kar360.model;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

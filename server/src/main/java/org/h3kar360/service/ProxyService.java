@@ -1,7 +1,10 @@
 package org.h3kar360.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.h3kar360.dto.ProxyRequestDto;
+import org.h3kar360.repository.ApiRepository;
+import org.h3kar360.repository.ClientRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @Service
+@RequiredArgsConstructor
 public class ProxyService {
+    private final ApiRepository apiRepository;
+    private final ClientRepository clientRepository;
+
     // cache for rest clients based on timeouts
     ConcurrentHashMap<String, RestClient> restClientCache = new ConcurrentHashMap<>();
 

@@ -1,11 +1,9 @@
-package org.h3kar360.entity;
+package org.h3kar360.model;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,11 +17,13 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "client_name")
+    @Column(nullable = false, name = "client_email")
+    private String clientEmail;
+
+    @Column(nullable = false, name = "client_name", unique = true)
     private String clientName;
 
-    // unique because will be hashed
-    @Column(nullable = false, name = "client_password", unique = true)
+    @Column(nullable = false, name = "client_password")
     private String clientPassword;
 
     @Column(nullable = false, name = "rate_limit")
@@ -31,6 +31,15 @@ public class Client {
 
     @Column(nullable = false, name = "rate_limit_window")
     private Integer rateLimitWindow;
+
+    @Column(nullable = false, name = "is_active")
+    private boolean isActive;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_expiration")
+    private LocalDateTime verificationCodeExpiresAt;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Api> apis;
