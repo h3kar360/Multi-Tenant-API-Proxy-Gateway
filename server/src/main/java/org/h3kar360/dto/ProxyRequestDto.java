@@ -9,8 +9,6 @@ import org.springframework.http.HttpMethod;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProxyRequestDto {
     @NotBlank(message = "api name cannot be blank")

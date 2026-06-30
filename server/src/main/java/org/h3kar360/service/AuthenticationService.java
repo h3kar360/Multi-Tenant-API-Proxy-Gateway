@@ -35,7 +35,7 @@ public class AuthenticationService {
         client.setActive(false);
         client.setVerificationCode(generateVerificationCode());
         client.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
-        sendVerificationEmail(client);
+        //sendVerificationEmail(client);
         return clientRepository.save(client);
     }
 
@@ -102,7 +102,7 @@ public class AuthenticationService {
         String htmlMessage = "<html>"
                 + "<body style=\"font-family: Arial, sans-serif;\">"
                 + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
-                + "<h2 style=\"color: #333;\">Welcome to our app!</h2>"
+                + "<h2 style=\"color: #333;\">Welcome to Proxier!</h2>"
                 + "<p style=\"font-size: 16px;\">Please enter the verification code below to continue:</p>"
                 + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
                 + "<h3 style=\"color: #333;\">Verification Code:</h3>"
