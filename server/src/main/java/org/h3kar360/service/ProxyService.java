@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.h3kar360.dto.ProxyRequestDto;
 import org.h3kar360.repository.ApiRepository;
 import org.h3kar360.repository.ClientRepository;
+import org.h3kar360.repository.projection.ApiInfoOnly;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -30,19 +31,23 @@ public class ProxyService {
         final HttpMethod method = proxyRequest.getMethod();
         final String apiName = proxyRequest.getApiName();
         final byte[] body = proxyRequest.getBody();
+        final long clientId = proxyRequest.getClientId();
 
-        // hard coded first for testing
-        String baseUrl = "https://" + apiName;
-        int connectionTimeout = 30000;
-        int readTimeout = 30000;
+        // get base url
+        ApiInfoOnly api = apiRepository.findApiInfoByApiNameAndClientId(apiName, clientId)
+                .orElseThrow(() -> new RuntimeException("API not found"));
 
-        String cacheKey = "%d:%d".formatted(connectionTimeout, readTimeout);
+        String apiUrl = api.getApiUrl();
+        int connectTimeout = api.getConnectTimeout() != null ? api.getConnectTimeout() : 30000;
+        int readTimeout = api.getReadTimeout() != null ? api.getReadTimeout() : 30000;
+
+        String cacheKey = "%d:%d".formatted(connectTimeout, readTimeout);
 
         // create the rest client with custom timeouts
         RestClient restClient = restClientCache.computeIfAbsent(cacheKey, k -> {
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 
-            factory.setConnectTimeout(connectionTimeout);
+            factory.setConnectTimeout(connectTimeout);
             factory.setReadTimeout(readTimeout);
 
             return RestClient.builder().requestFactory(factory).build();
@@ -58,11 +63,11 @@ public class ProxyService {
 
         String path = request.getRequestURI();
         String query = request.getQueryString();
-        String apiUri = path.replace("/proxy/v1/gateway", "");
+        String apiUri = path.replace("/proxy/v1/gateway/" + apiName, "");
 
         String targetUrl = query != null && !query.isEmpty()
-                ? "https:/" + apiUri + "?" + query
-                : "https:/" + apiUri;
+                ? apiUrl + apiUri + "?" + query
+                : apiUrl + apiUri;
 
         RestClient.RequestBodySpec reqSpec = restClient
                 .method(method)

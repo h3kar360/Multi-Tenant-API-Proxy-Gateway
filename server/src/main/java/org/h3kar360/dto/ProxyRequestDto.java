@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.h3kar360.model.Client;
 import org.springframework.http.HttpMethod;
 
 @Data
@@ -21,4 +22,7 @@ public class ProxyRequestDto {
     HttpServletRequest request;
 
     byte[] body;
+
+    @NotNull(message = "client ID must not be empty")
+    long clientId;
 }

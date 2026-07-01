@@ -3,8 +3,12 @@ package org.h3kar360.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.dto.ProxyRequestDto;
+import org.h3kar360.model.Client;
+import org.h3kar360.security.ClientUserDetails;
 import org.h3kar360.service.ProxyService;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +24,18 @@ public class ProxyController {
     public ResponseEntity<byte[]> proxyGatewayRequest(
             @PathVariable String apiName,
             HttpServletRequest request,
-            @RequestBody(required = false) byte[] body
+            @RequestBody(required = false) byte[] body,
+            @AuthenticationPrincipal ClientUserDetails clientUserDetails
             ) {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
+        long client = clientUserDetails.getClientId();
 
         ProxyRequestDto proxyRequest = ProxyRequestDto.builder()
                 .apiName(apiName)
                 .method(method)
                 .request(request)
                 .body(body)
+                .clientId(client)
                 .build();
 
         return proxyService.forwardRequest(proxyRequest);
