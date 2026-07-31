@@ -1,14 +1,14 @@
 package org.h3kar360.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Value;
 
-@Getter
-@Setter
+@Builder
+@Value
 public class ApiResponseDto {
-    private Long id;
-    private String apiName;
-    private String apiUrl;
-    private Integer connectTimeout;
-    private Integer readTimeout;
+    Long id;
+    String apiName;
+    String apiUrl;
+    Integer connectTimeout;
+    Integer readTimeout;
 }

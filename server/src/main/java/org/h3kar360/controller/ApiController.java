@@ -1,6 +1,7 @@
 package org.h3kar360.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.h3kar360.annotation.RateLimitProtected;
 import org.h3kar360.dto.ApiResponseDto;
 import org.h3kar360.dto.InputApiInfoDto;
 import org.h3kar360.dto.UpdateApiInfoDto;
@@ -20,6 +21,7 @@ public class ApiController {
     private final ApiService apiService;
 
     @PostMapping()
+    @RateLimitProtected
     public ResponseEntity<ApiResponseDto> addApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @RequestBody InputApiInfoDto inputApiInfoDto
@@ -30,6 +32,7 @@ public class ApiController {
     }
 
     @GetMapping()
+    @RateLimitProtected
     public ResponseEntity<List<ApiResponseDto>> getAllApis(@AuthenticationPrincipal ClientUserDetails clientUserDetails) {
         long clientId = clientUserDetails.getClientId();
         List<ApiResponseDto> apis = apiService.getAllApi(clientId);
@@ -37,6 +40,7 @@ public class ApiController {
     }
 
     @PutMapping("/{apiId}")
+    @RateLimitProtected
     public ResponseEntity<ApiResponseDto> updateApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @PathVariable long apiId,
@@ -48,6 +52,7 @@ public class ApiController {
     }
 
     @DeleteMapping("/{apiId}")
+    @RateLimitProtected
     public ResponseEntity<String> deleteApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @PathVariable long apiId

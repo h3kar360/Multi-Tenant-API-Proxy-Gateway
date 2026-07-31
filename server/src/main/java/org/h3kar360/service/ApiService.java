@@ -66,12 +66,14 @@ public class ApiService {
     }
 
     private ApiResponseDto toDto(Api api) {
-        ApiResponseDto dto = new ApiResponseDto();
-        dto.setId(api.getId());
-        dto.setApiName(api.getApiName());
-        dto.setApiUrl(api.getApiUrl());
-        dto.setConnectTimeout(api.getConnectTimeout());
-        dto.setReadTimeout(api.getReadTimeout());
+        ApiResponseDto dto = ApiResponseDto.builder()
+            .id(api.getId())
+            .apiName(api.getApiName())
+            .apiUrl(api.getApiUrl())
+            .connectTimeout(api.getConnectTimeout())
+            .readTimeout(api.getReadTimeout())
+            .build();
+
         return dto;
     }
 }
