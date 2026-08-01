@@ -13,8 +13,13 @@ import io.lettuce.core.codec.StringCodec;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 import java.time.Duration;
 import java.util.function.Supplier;
@@ -54,5 +59,15 @@ public class RedisConfiguration {
     @Bean
     public Supplier<BucketConfiguration> bucketConfiguration() {
         return new DynamicBucketConfiguration(clientRepository);
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
+        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10));
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(configuration)
+                .build();
     }
 }
