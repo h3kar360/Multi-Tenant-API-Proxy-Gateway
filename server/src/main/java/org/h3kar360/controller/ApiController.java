@@ -21,7 +21,6 @@ public class ApiController {
     private final ApiService apiService;
 
     @PostMapping()
-    @RateLimitProtected
     public ResponseEntity<ApiResponseDto> addApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @RequestBody InputApiInfoDto inputApiInfoDto
@@ -32,15 +31,14 @@ public class ApiController {
     }
 
     @GetMapping()
-    @RateLimitProtected
     public ResponseEntity<List<ApiResponseDto>> getAllApis(@AuthenticationPrincipal ClientUserDetails clientUserDetails) {
+        System.out.println("hello there");
         long clientId = clientUserDetails.getClientId();
         List<ApiResponseDto> apis = apiService.getAllApi(clientId);
         return ResponseEntity.ok(apis);
     }
 
     @PutMapping("/{apiId}")
-    @RateLimitProtected
     public ResponseEntity<ApiResponseDto> updateApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @PathVariable long apiId,
@@ -52,7 +50,6 @@ public class ApiController {
     }
 
     @DeleteMapping("/{apiId}")
-    @RateLimitProtected
     public ResponseEntity<String> deleteApi(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails,
             @PathVariable long apiId

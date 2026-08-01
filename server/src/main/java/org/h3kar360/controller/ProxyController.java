@@ -2,12 +2,15 @@ package org.h3kar360.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.h3kar360.annotation.RateLimitProtected;
 import org.h3kar360.dto.ProxyRequestDto;
 import org.h3kar360.model.Client;
 import org.h3kar360.security.ClientUserDetails;
 import org.h3kar360.service.ProxyService;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +24,7 @@ public class ProxyController {
     private final ProxyService proxyService;
 
     @RequestMapping("/{apiName}/**")
+    @RateLimitProtected
     public ResponseEntity<byte[]> proxyGatewayRequest(
             @PathVariable String apiName,
             HttpServletRequest request,

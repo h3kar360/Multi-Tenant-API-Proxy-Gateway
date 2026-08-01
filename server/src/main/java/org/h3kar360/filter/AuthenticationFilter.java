@@ -50,6 +50,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(clientEmail);
 
                 if(jwtService.isTokenValid(jwt, userDetails)) {
+                    System.out.println("token is valid");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -58,14 +59,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    System.out.println("token invalid");
                 }
             }
-
-            filterChain.doFilter(request, response);
         } catch (Exception e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
+        
+        filterChain.doFilter(request, response);
     }
 }
