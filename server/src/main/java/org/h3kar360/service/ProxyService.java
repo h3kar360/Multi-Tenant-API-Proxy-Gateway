@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.dto.ProxyRequestDto;
 import org.h3kar360.repository.ApiRepository;
-import org.h3kar360.repository.ClientRepository;
 import org.h3kar360.repository.projection.ApiInfoOnly;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,33 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class ProxyService {
     private final ApiRepository apiRepository;
-    private final ClientRepository clientRepository;
+    private final ProxyServiceCached proxyServiceCached;
+
+    @Value("${app.cache.threshold}")
+    private int threshold;
 
     // cache for rest clients based on timeouts
     ConcurrentHashMap<String, RestClient> restClientCache = new ConcurrentHashMap<>();
+
+    // cache for api calls
+    ConcurrentHashMap<String, Integer> calls = new ConcurrentHashMap<>();
+
+    public ResponseEntity<byte[]> proxyManager(ProxyRequestDto proxyRequest) {
+        final HttpServletRequest request = proxyRequest.getRequest();
+
+        String path = request.getRequestURI();
+        String query = request.getQueryString();
+
+        String url = query == null || query.isEmpty() ? path : path + "?" + query;
+
+        int currCalls = calls.merge(url, 1, Integer::sum);
+
+        if(currCalls >= threshold) {
+            return proxyServiceCached.forwardRequestCached(url, proxyRequest);
+        }
+
+        return forwardRequest(proxyRequest);
+    }
 
     public ResponseEntity<byte[]> forwardRequest(ProxyRequestDto proxyRequest) {
         // extracting all the fields of the dto
