@@ -30,7 +30,7 @@ public class AuthenticationService {
         client.setClientName(signUpInputDto.getUsername());
         client.setClientEmail(signUpInputDto.getEmail());
         client.setClientPassword(passwordEncoder.encode(signUpInputDto.getPassword()));
-        client.setRateLimit(2);
+        client.setRateLimit(20);
         client.setRateLimitWindow(1);
         client.setActive(false);
         client.setVerificationCode(generateVerificationCode());

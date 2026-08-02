@@ -6,6 +6,7 @@ import org.h3kar360.annotation.RateLimitProtected;
 import org.h3kar360.dto.ProxyRequestDto;
 import org.h3kar360.model.Client;
 import org.h3kar360.security.ClientUserDetails;
+import org.h3kar360.service.ProxyManagerService;
 import org.h3kar360.service.ProxyService;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/proxy/v1/gateway")
 @RequiredArgsConstructor
 public class ProxyController {
-    private final ProxyService proxyService;
+    private final ProxyManagerService proxyManagerService;
 
     @RequestMapping("/{apiName}/**")
     @RateLimitProtected
@@ -42,7 +43,7 @@ public class ProxyController {
                 .clientId(client)
                 .build();
 
-        return proxyService.forwardRequest(proxyRequest);
+        return proxyManagerService.proxyManager(proxyRequest);
     }
 
 }
