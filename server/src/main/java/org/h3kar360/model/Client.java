@@ -43,4 +43,7 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Api> apis;
+
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    private ProxyCredential proxyCredentials;
 }
