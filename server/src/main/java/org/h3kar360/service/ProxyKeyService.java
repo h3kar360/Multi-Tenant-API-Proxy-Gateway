@@ -5,6 +5,7 @@ import org.h3kar360.dto.ProxyKeyResponseDto;
 import org.h3kar360.model.Client;
 import org.h3kar360.model.ProxyCredential;
 import org.h3kar360.repository.ProxyKeyRepository;
+import org.h3kar360.util.HashUtil;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -25,24 +26,10 @@ public class ProxyKeyService {
         return "pk_live_" + Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    public String hashKey(String rawKey) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(rawKey.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hash);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean verifyKey(String rawKey, String hashKey) {
-        return hashKey(rawKey).equals(hashKey);
-    }
-
     public ProxyKeyResponseDto createKey(Client client) {
         ProxyCredential proxy = new ProxyCredential();
 
-        String hashedProxy = hashKey(generateRawKey());
+        String hashedProxy = HashUtil.hashKey(generateRawKey());
 
         proxy.setProxyKey(hashedProxy);
         proxy.setClient(client);
@@ -51,11 +38,15 @@ public class ProxyKeyService {
         return toDto(hashedProxy);
     }
 
-    public ProxyKeyResponseDto getKey(long clientId) {
+    public ProxyKeyResponseDto recreateKey(Client client) {
+        long clientId = client.getId();
+
         ProxyCredential proxyCredential = proxyKeyRepository.findByClientId(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
-        return toDto(proxyCredential.getProxyKey());
+        proxyKeyRepository.deleteById(proxyCredential.getId());
+
+        return createKey(client);
     }
 
     public ProxyKeyResponseDto toDto(String proxyKey) {
