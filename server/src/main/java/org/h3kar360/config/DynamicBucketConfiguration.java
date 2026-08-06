@@ -23,7 +23,6 @@ public class DynamicBucketConfiguration implements Supplier<BucketConfiguration>
     @Override
     public BucketConfiguration get() {
         String proxyKey = proxyKeyHolder.get();
-        System.out.println(proxyKey);
 
         Client client = proxyKeyRepository.findByProxyKey(HashUtil.hashKey(proxyKey))
                 .orElseThrow(() -> new RuntimeException("Invalid proxy key")).getClient();

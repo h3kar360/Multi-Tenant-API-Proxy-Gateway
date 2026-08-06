@@ -23,6 +23,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final int keyBytes = 32;
 
     public Client signup(SignUpInputDto signUpInputDto) {
         Client client = new Client();
