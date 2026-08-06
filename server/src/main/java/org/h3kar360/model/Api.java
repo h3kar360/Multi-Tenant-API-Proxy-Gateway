@@ -32,4 +32,8 @@ public class Api {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proxy_credential_id", nullable = false)
+    private ProxyCredential proxyCredential;
 }

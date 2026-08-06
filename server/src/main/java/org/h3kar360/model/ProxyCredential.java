@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "proxy_credentials")
@@ -28,6 +29,9 @@ public class ProxyCredential {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
+    @OneToMany(mappedBy = "proxyCredential", cascade = CascadeType.ALL)
+    private List<Api> apis;
 
     @PrePersist
     protected void onCreate() {

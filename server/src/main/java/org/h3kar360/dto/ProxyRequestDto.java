@@ -23,6 +23,6 @@ public class ProxyRequestDto {
 
     byte[] body;
 
-    @NotNull(message = "client ID must not be empty")
-    long clientId;
+    @NotNull(message = "proxy key must not be empty")
+    String proxyKey;
 }

@@ -12,5 +12,5 @@ public interface ApiRepository extends JpaRepository<Api, Long> {
 
     Optional<Api> findByIdAndClientId(long apiId, long clientId);
 
-    Optional<ApiInfoOnly> findApiInfoByApiNameAndClientId(String apiName, long clientId);
+    Optional<ApiInfoOnly> findApiInfoByApiNameAndProxyCredentialId(String apiName, long proxyCredentialId);
 }

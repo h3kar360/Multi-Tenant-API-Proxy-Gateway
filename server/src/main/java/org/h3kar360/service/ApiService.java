@@ -28,6 +28,7 @@ public class ApiService {
         if(inputApiInfoDto.getReadTimeout() != null)
             api.setReadTimeout(inputApiInfoDto.getReadTimeout());
 
+        api.setProxyCredential(client.getProxyCredentials());
         api.setClient(client);
 
         Api savedApi = apiRepository.save(api);

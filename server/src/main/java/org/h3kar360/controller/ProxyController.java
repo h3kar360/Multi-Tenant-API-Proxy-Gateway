@@ -13,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/proxy/v1/gateway")
@@ -28,19 +25,18 @@ public class ProxyController {
     @RateLimitProtected
     public ResponseEntity<byte[]> proxyGatewayRequest(
             @PathVariable String apiName,
+            @RequestHeader("X-Proxy-Key") String proxyKey,
             HttpServletRequest request,
-            @RequestBody(required = false) byte[] body,
-            @AuthenticationPrincipal ClientUserDetails clientUserDetails
+            @RequestBody(required = false) byte[] body
             ) {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
-        long client = clientUserDetails.getClientId();
 
         ProxyRequestDto proxyRequest = ProxyRequestDto.builder()
                 .apiName(apiName)
                 .method(method)
                 .request(request)
                 .body(body)
-                .clientId(client)
+                .proxyKey(proxyKey)
                 .build();
 
         return proxyManagerService.proxyManager(proxyRequest);
