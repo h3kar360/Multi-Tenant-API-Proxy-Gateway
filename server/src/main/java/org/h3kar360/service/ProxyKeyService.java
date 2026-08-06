@@ -29,13 +29,14 @@ public class ProxyKeyService {
     public ProxyKeyResponseDto createKey(Client client) {
         ProxyCredential proxy = new ProxyCredential();
 
-        String hashedProxy = HashUtil.hashKey(generateRawKey());
+        String proxyKey = generateRawKey();
+        String hashedProxy = HashUtil.hashKey(proxyKey);
 
         proxy.setProxyKey(hashedProxy);
         proxy.setClient(client);
 
         proxyKeyRepository.save(proxy);
-        return toDto(hashedProxy);
+        return toDto(proxyKey);
     }
 
     public ProxyKeyResponseDto recreateKey(Client client) {

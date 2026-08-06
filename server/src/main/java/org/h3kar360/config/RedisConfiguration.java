@@ -12,6 +12,8 @@ import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.repository.ClientRepository;
+import org.h3kar360.repository.ProxyKeyRepository;
+import org.h3kar360.util.ProxyKeyHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.CacheManager;
@@ -31,7 +33,8 @@ import java.util.function.Supplier;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfiguration {
-    private final ClientRepository clientRepository;
+    private final ProxyKeyHolder proxyKeyHolder;
+    private final ProxyKeyRepository proxyKeyRepository;
 
     @Value("${redis.host}")
     private String host;
@@ -62,7 +65,7 @@ public class RedisConfiguration {
 
     @Bean
     public Supplier<BucketConfiguration> bucketConfiguration() {
-        return new DynamicBucketConfiguration(clientRepository);
+        return new DynamicBucketConfiguration(proxyKeyHolder, proxyKeyRepository);
     }
 
     @Bean
