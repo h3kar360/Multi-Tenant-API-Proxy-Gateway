@@ -38,7 +38,8 @@ public class ProxyService {
 
 
         // get proxy credential ID from proxy key
-        final long proxyCredential = proxyKeyRepository.findByProxyKey(HashUtil.hashKey(proxyKey)).getId();
+        final long proxyCredential = proxyKeyRepository.findByProxyKey(HashUtil.hashKey(proxyKey))
+                .orElseThrow(() -> new RuntimeException("Invalid proxy key")).getId();
 
         // get base url
         ApiInfoOnly api = apiRepository.findApiInfoByApiNameAndProxyCredentialId(apiName, proxyCredential)

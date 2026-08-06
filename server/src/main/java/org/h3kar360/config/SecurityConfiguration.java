@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/proxy/v1/gateway/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

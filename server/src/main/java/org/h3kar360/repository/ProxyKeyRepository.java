@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface ProxyKeyRepository extends JpaRepository<ProxyCredential, Long> {
     Optional<ProxyCredential> findByClientId(long clientId);
 
-    ProxyCredential findByProxyKey(String proxyKey);
+    Optional<ProxyCredential> findByProxyKey(String proxyKey);
 }
