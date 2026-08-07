@@ -1,12 +1,14 @@
 package org.h3kar360.service;
 
 import lombok.RequiredArgsConstructor;
+import org.h3kar360.model.Client;
 import org.h3kar360.model.RefreshToken;
 import org.h3kar360.repository.RefreshTokenRepository;
 import org.h3kar360.util.HashUtil;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Service
@@ -27,5 +29,16 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
 
         return rawRefresh;
+    }
+
+    public Client validateAndGetClient(String refreshToken) {
+        RefreshToken refreshTokenData = refreshTokenRepository.findByRefreshToken(HashUtil.hashKey(refreshToken))
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
+        if(LocalDateTime.now().isAfter(refreshTokenData.getExpiredAt())) {
+            return null;
+        }
+
+        return refreshTokenData.getClient();
     }
 }

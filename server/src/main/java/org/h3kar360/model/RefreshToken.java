@@ -25,6 +25,10 @@ public class RefreshToken {
     @Column(nullable = false, name = "expire_at")
     private LocalDateTime expiredAt;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
     @PrePersist
     protected void onCreate() {
         expiredAt = LocalDateTime.now().plusDays(7);

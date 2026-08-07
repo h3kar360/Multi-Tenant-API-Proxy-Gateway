@@ -46,4 +46,7 @@ public class Client {
 
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private ProxyCredential proxyCredentials;
+
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
 }

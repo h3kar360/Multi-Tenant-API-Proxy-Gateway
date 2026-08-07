@@ -1,17 +1,18 @@
 package org.h3kar360.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.h3kar360.dto.LoginInputDto;
-import org.h3kar360.dto.LoginResponseDto;
-import org.h3kar360.dto.SignUpInputDto;
-import org.h3kar360.dto.VerifyClientDto;
+import org.h3kar360.dto.*;
 import org.h3kar360.model.Client;
 import org.h3kar360.security.ClientUserDetails;
 import org.h3kar360.service.AuthenticationService;
 import org.h3kar360.service.JwtService;
 import org.h3kar360.service.RefreshTokenService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth")
@@ -48,11 +49,6 @@ public class AuthenticationController {
                 .body(loginResponseDto);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refresh() {
-        return ResponseEntity.ok("soon");
-    }
-
     @PostMapping("/verify")
     public ResponseEntity<?> verifyClient(@RequestBody VerifyClientDto verifyClientDto) {
         try {
@@ -71,5 +67,37 @@ public class AuthenticationController {
         } catch(RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(
+            HttpServletRequest request
+    ) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = "";
+
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if("refresh_token".equals(cookie.getName()))
+                    refreshToken = cookie.getValue();
+            }
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing refresh token");
+        }
+
+        Client client = refreshTokenService.validateAndGetClient(refreshToken);
+        if(client == null)
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Refresh token invalid or expired");
+
+        String jwtToken = jwtService.generateToken(new ClientUserDetails(client));
+
+        NewAccessTokenDto newAccessTokenDto = new NewAccessTokenDto();
+        newAccessTokenDto.setNewAccessToken(jwtToken);
+
+        return ResponseEntity.ok(newAccessTokenDto);
     }
 }
