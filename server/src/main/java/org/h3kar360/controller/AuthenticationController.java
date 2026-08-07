@@ -3,6 +3,7 @@ package org.h3kar360.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.dto.*;
 import org.h3kar360.model.Client;
@@ -30,11 +31,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginInputDto loginInputDto) {
+    public ResponseEntity<LoginResponseDto> logIn(
+            @RequestBody LoginInputDto loginInputDto,
+            HttpServletResponse response
+        ) {
         Client authenticatedClient = authenticationService.authenticate(loginInputDto);
 
         String jwtToken = jwtService.generateToken(new ClientUserDetails(authenticatedClient));
-        String refreshToken = refreshTokenService.generateRefreshToken();
+        String refreshToken = refreshTokenService.generateRefreshToken(authenticatedClient);
 
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
@@ -42,11 +46,11 @@ public class AuthenticationController {
         cookie.setPath("/auth/refresh");
         cookie.setMaxAge(7 * 24 * 60 * 60);
 
+        response.addCookie(cookie);
+
         LoginResponseDto loginResponseDto = new LoginResponseDto(jwtToken, refreshToken, jwtService.getJwtExpiration());
 
-        return ResponseEntity.ok()
-                .header("Set-Cookie", cookie.toString())
-                .body(loginResponseDto);
+        return ResponseEntity.ok(loginResponseDto);
     }
 
     @PostMapping("/verify")

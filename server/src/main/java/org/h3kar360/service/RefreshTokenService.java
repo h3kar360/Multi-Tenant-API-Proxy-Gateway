@@ -18,13 +18,14 @@ public class RefreshTokenService {
     private final SecureRandom secureRandom = new SecureRandom();
     private final int keyBytes = 32;
 
-    public String generateRefreshToken() {
+    public String generateRefreshToken(Client client) {
         byte[] bytes = new byte[keyBytes];
         secureRandom.nextBytes(bytes);
         String rawRefresh = "refresh_" + Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setRefreshToken(HashUtil.hashKey(rawRefresh));
+        refreshToken.setClient(client);
 
         refreshTokenRepository.save(refreshToken);
 
