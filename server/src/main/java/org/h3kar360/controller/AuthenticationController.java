@@ -77,15 +77,9 @@ public class AuthenticationController {
     public ResponseEntity<?> refresh(
             HttpServletRequest request
     ) {
-        Cookie[] cookies = request.getCookies();
-        String refreshToken = "";
+        String refreshToken = getRefreshToken(request);
 
-        if(cookies != null) {
-            for(Cookie cookie : cookies) {
-                if("refresh_token".equals(cookie.getName()))
-                    refreshToken = cookie.getValue();
-            }
-        } else {
+        if(refreshToken.isBlank()) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Missing refresh token");
@@ -103,5 +97,33 @@ public class AuthenticationController {
         newAccessTokenDto.setNewAccessToken(jwtToken);
 
         return ResponseEntity.ok(newAccessTokenDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        String refreshToken = getRefreshToken(request);
+
+        if(refreshToken.isBlank()) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing refresh token");
+        }
+
+        refreshTokenService.deleteRefreshToken(refreshToken);
+
+        return ResponseEntity.ok("logged out");
+    }
+
+    public String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+            if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if("refresh_token".equals(cookie.getName()))
+                    return cookie.getValue();
+            }
+        }
+
+        return "";
     }
 }
