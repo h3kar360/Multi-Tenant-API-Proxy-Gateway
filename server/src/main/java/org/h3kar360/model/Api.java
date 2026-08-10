@@ -24,10 +24,10 @@ public class Api {
     private String apiUrl;
 
     @Column(name = "connect_timeout")
-    private Integer connectTimeout;
+    private Integer connectTimeout = 3000;
 
     @Column(name = "read_timeout")
-    private Integer readTimeout;
+    private Integer readTimeout = 3000;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)

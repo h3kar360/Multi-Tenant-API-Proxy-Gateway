@@ -43,12 +43,17 @@ public class AuthenticationController {
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
-        cookie.setPath("/auth/refresh");
+        cookie.setPath("/");
         cookie.setMaxAge(7 * 24 * 60 * 60);
 
         response.addCookie(cookie);
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto(jwtToken, refreshToken, jwtService.getJwtExpiration());
+        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                .accessToken(jwtToken)
+                .clientName(authenticatedClient.getClientName())
+                .refreshToken(refreshToken)
+                .expiresIn(jwtService.getJwtExpiration())
+                .build();
 
         return ResponseEntity.ok(loginResponseDto);
     }
@@ -95,6 +100,7 @@ public class AuthenticationController {
 
         NewAccessTokenDto newAccessTokenDto = new NewAccessTokenDto();
         newAccessTokenDto.setNewAccessToken(jwtToken);
+        newAccessTokenDto.setClientName(client.getClientName());
 
         return ResponseEntity.ok(newAccessTokenDto);
     }

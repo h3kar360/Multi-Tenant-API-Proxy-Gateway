@@ -1,5 +1,6 @@
 package org.h3kar360.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.h3kar360.model.Client;
 import org.h3kar360.model.RefreshToken;
@@ -18,6 +19,7 @@ public class RefreshTokenService {
     private final SecureRandom secureRandom = new SecureRandom();
     private final int keyBytes = 32;
 
+    @Transactional
     public String generateRefreshToken(Client client) {
         byte[] bytes = new byte[keyBytes];
         secureRandom.nextBytes(bytes);
@@ -43,7 +45,8 @@ public class RefreshTokenService {
         return refreshTokenData.getClient();
     }
 
+    @Transactional
     public void deleteRefreshToken(String refreshToken) {
-        refreshTokenRepository.deleteByRefreshToken(refreshToken);
+        refreshTokenRepository.deleteByRefreshToken(HashUtil.hashKey(refreshToken));
     }
 }

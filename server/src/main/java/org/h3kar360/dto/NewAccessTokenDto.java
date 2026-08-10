@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class NewAccessTokenDto {
     private String newAccessToken;
+    private String clientName;
 }

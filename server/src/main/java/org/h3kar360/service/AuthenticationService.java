@@ -36,7 +36,7 @@ public class AuthenticationService {
         client.setActive(false);
         client.setVerificationCode(generateVerificationCode());
         client.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
-        //sendVerificationEmail(client);
+        sendVerificationEmail(client);
         return clientRepository.save(client);
     }
 
