@@ -12,6 +12,7 @@ import org.h3kar360.service.AuthenticationService;
 import org.h3kar360.service.JwtService;
 import org.h3kar360.service.ProxyKeyService;
 import org.h3kar360.service.RefreshTokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final RefreshTokenService refreshTokenService;
     private final ProxyKeyService proxyKeyService;
+
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
 
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpInputDto signUpInputDto) {
@@ -51,7 +55,7 @@ public class AuthenticationController {
 
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false);
+        cookie.setSecure(cookieSecure);
         cookie.setPath("/");
         cookie.setMaxAge(7 * 24 * 60 * 60);
 

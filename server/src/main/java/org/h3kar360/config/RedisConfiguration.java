@@ -42,11 +42,15 @@ public class RedisConfiguration {
     @Value("${redis.port}")
     private int port;
 
+    @Value("${redis.password}")
+    private String password;
+
     private RedisClient redisClient() {
         return RedisClient.create(RedisURI.builder()
                 .withHost(host)
                 .withPort(port)
-                .withSsl(false)
+                .withSsl(true)
+                .withAuthentication("default", password)
                 .build());
     }
 
