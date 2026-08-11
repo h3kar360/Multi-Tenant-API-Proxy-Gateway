@@ -10,6 +10,7 @@ import org.h3kar360.model.Client;
 import org.h3kar360.security.ClientUserDetails;
 import org.h3kar360.service.AuthenticationService;
 import org.h3kar360.service.JwtService;
+import org.h3kar360.service.ProxyKeyService;
 import org.h3kar360.service.RefreshTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,19 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
     private final RefreshTokenService refreshTokenService;
+    private final ProxyKeyService proxyKeyService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Client> signUp(@RequestBody SignUpInputDto signUpInputDto) {
+    public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpInputDto signUpInputDto) {
         Client signedUpClient = authenticationService.signup(signUpInputDto);
-        return ResponseEntity.ok(signedUpClient);
+        String proxyKey = proxyKeyService.createKey(signedUpClient).getProxyKey();
+
+        SignUpResponseDto signUpResponseDto = SignUpResponseDto.builder()
+                .client(signedUpClient)
+                .proxyKey(proxyKey)
+                .build();
+
+        return ResponseEntity.ok(signUpResponseDto);
     }
 
     @PostMapping("/login")

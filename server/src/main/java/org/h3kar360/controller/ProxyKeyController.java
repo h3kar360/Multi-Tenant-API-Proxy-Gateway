@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProxyKeyController {
     private final ProxyKeyService proxyKeyService;
 
-    @PostMapping("generate")
+    @PostMapping("/generate")
     public ResponseEntity<ProxyKeyResponseDto> createKey(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails
     ) {
@@ -30,7 +30,7 @@ public class ProxyKeyController {
     @PostMapping("/regenerate")
     public ResponseEntity<ProxyKeyResponseDto> recreateKey(
             @AuthenticationPrincipal ClientUserDetails clientUserDetails
-            ) {
+    ) {
         Client client = clientUserDetails.getClient();
         ProxyKeyResponseDto recreateProxyKey = proxyKeyService.recreateKey(client);
         return ResponseEntity.ok(recreateProxyKey);

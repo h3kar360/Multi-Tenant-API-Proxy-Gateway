@@ -1,6 +1,7 @@
 package org.h3kar360.service;
 
 import lombok.RequiredArgsConstructor;
+import org.h3kar360.controller.ProxyKeyController;
 import org.h3kar360.dto.ProxyKeyResponseDto;
 import org.h3kar360.model.Client;
 import org.h3kar360.model.ProxyCredential;

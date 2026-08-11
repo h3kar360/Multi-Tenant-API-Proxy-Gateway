@@ -39,7 +39,13 @@ const Navbar = () => {
                     PROXIER
                 </NavLink>
             </div>
-            <div>
+            <div className="flex items-center justify-center gap-4">
+                <a
+                    href="https://github.com/h3kar360/Multi-Tenant-API-Proxy-Gateway"
+                    className="px-3 py-2 bg-gray-600 rounded-md hover:bg-gray-500"
+                >
+                    Documentation
+                </a>
                 {isLoggedIn ? (
                     <div className="flex gap-4 items-center">
                         <div>Hi, {clientName}</div>

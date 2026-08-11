@@ -1,21 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProxyKeyTextBox from "./ProxyKeyTextBox";
 import { useAuth } from "../context/AuthContext";
 import { refreshProcess } from "../util/AuthRefresh";
 import { useNavigate } from "react-router-dom";
 
 const ProxyKey = () => {
-    const [getProxyKey, setGetProxyKey] = useState<boolean>(false);
-    const [proxyKey, setProxyKey] = useState<string>("");
+    const { token, refresh, logout, initialProxyKey } = useAuth();
+    const [getProxyKey, setGetProxyKey] = useState<boolean>(!!initialProxyKey);
+    const [proxyKey, setProxyKey] = useState<string>(initialProxyKey);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { token, refresh, logout } = useAuth();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (initialProxyKey) {
+            setProxyKey(initialProxyKey);
+            setGetProxyKey(true);
+        }
+    }, [initialProxyKey]);
+
     const makeRequest = async (authToken: string | null): Promise<Response> => {
-        return fetch(`${import.meta.env.VITE_API_URL}/proxy/v1/key/generate`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${authToken}` },
-        });
+        return fetch(
+            `${import.meta.env.VITE_API_URL}/proxy/v1/key/regenerate`,
+            {
+                method: "POST",
+                headers: { Authorization: `Bearer ${authToken}` },
+            },
+        );
     };
 
     const proxyRequest = async () => {
@@ -67,7 +77,7 @@ const ProxyKey = () => {
                         disabled={isLoading}
                         className="bg-gray-500 px-3 py-1 rounded hover:bg-gray-400"
                     >
-                        Get Proxy Key
+                        Regenerate New Proxy Key
                     </button>
                 )}
             </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface SignUpBody {
     username: String;
@@ -12,6 +13,7 @@ export const SignupComponent = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { handleSignup } = useAuth();
 
     const navigate = useNavigate();
 
@@ -37,6 +39,10 @@ export const SignupComponent = () => {
 
             if (!response.ok)
                 throw new Error(`HTTP Error, status=${response.status}`);
+
+            const { proxyKey }: { proxyKey: string } = await response.json();
+
+            handleSignup(proxyKey);
 
             alert("Check verification code in your email inbox");
             navigate("/verify", { state: { email } });

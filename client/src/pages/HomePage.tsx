@@ -16,6 +16,7 @@ interface ApiResponse {
 const HomePage = () => {
     const { isLoggedIn, token, refresh, logout } = useAuth();
     const [apis, setApis] = useState<Array<ApiResponse>>([]);
+    const [proxyKey, setProxyKey] = useState<string>("");
 
     const navigate = useNavigate();
 
