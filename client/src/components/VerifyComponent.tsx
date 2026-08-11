@@ -6,10 +6,6 @@ interface VerifyBody {
     verificationCode: string;
 }
 
-interface ResendBody {
-    email: string;
-}
-
 export const VerifyComponent = () => {
     const [isVerifyLoading, setIsVerifyLoading] = useState<boolean>(false);
     const [isResendLoading, setIsResendLoading] = useState<boolean>(false);
@@ -55,17 +51,12 @@ export const VerifyComponent = () => {
     const resend = async () => {
         setIsResendLoading(true);
 
-        const resend: ResendBody = {
-            email,
-        };
-
         try {
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/auth/verify`,
+                `${import.meta.env.VITE_API_URL}/auth/resend?email=${encodeURIComponent(email)}`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(resend),
                 },
             );
 

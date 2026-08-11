@@ -88,7 +88,7 @@ public class AuthenticationService {
             if(client.isActive())
                 throw new RuntimeException("Account is already verified");
 
-            client.setVerificationCodeExpiresAt(LocalDateTime.now());
+            client.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
             client.setVerificationCode(generateVerificationCode());
             sendVerificationEmail(client);
             clientRepository.save(client);
