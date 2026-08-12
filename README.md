@@ -13,7 +13,7 @@ A production-ready, self-hosted API gateway with authentication, rate limiting, 
 | ⚡ **Rate Limiting**       | Distributed rate limiting with Bucket4j + Redis |
 | 💾 **Smart Caching**       | Threshold-based caching with Redis              |
 | 📊 **Developer Dashboard** | Manage APIs, view usage, copy keys              |
-| 🐳 **Dockerized**          | Run everything with `docker-compose up`         |
+| 🐳 **Dockerized**          | Run everything with `docker compose up`         |
 
 ---
 
@@ -24,19 +24,19 @@ A production-ready, self-hosted API gateway with authentication, rate limiting, 
 │                         Docker Network                              │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────────┐    │
-│  │   Frontend   │     │   Backend    │     │   PostgreSQL     │    │
-│  │  (React +    │────▶│ (Spring Boot)│────▶│   (Database)     │    │
-│  │   Tailwind)  │     │   :8080      │     │   :5432          │    │
-│  │   :3000      │     └──────┬───────┘     └──────────────────┘    │
-│  └──────────────┘            │                                     │
-│                              ▼                                     │
-│                    ┌──────────────────┐                           │
-│                    │     Redis        │                           │
-│                    │ (Rate Limiting   │                           │
-│                    │  + Caching)      │                           │
-│                    │   :6379          │                           │
-│                    └──────────────────┘                           │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────────┐     │
+│  │   Frontend   │     │   Backend    │     │   PostgreSQL     │     │
+│  │  (React +    │────▶│ (Spring Boot)│────▶│   (Database)    │    │
+│  │   Tailwind)  │     │   :8080      │     │   :5432          │     │
+│  │   :3000      │     └──────┬───────┘     └──────────────────┘     │
+│  └──────────────┘            │                                      │
+│                              ▼                                      │
+│                    ┌──────────────────┐                             │
+│                    │     Redis        │                             │
+│                    │ (Rate Limiting   │                             │
+│                    │  + Caching)      │                             │
+│                    │   :6379          │                             │
+│                    └──────────────────┘                             │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
