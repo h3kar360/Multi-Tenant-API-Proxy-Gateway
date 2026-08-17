@@ -56,7 +56,7 @@ public class AuthenticationController {
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(cookieSecure);
-        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("SameSite", cookieSecure ? "None" : "Lax");
         cookie.setPath("/");
         cookie.setMaxAge(7 * 24 * 60 * 60);
 

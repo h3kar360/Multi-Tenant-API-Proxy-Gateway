@@ -1,6 +1,6 @@
 export const refreshProcess = async (refresh: (newToken: string) => void) => {
     try {
-        console.log("🔄 Refreshing token...");
+        console.log("Refreshing token...");
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/auth/refresh`,
             {
@@ -20,7 +20,7 @@ export const refreshProcess = async (refresh: (newToken: string) => void) => {
         refresh(newAccessToken);
         return newAccessToken;
     } catch (error) {
-        console.error("❌ Refresh error:", error);
+        console.error("Refresh error:", error);
         return false;
     }
 };
