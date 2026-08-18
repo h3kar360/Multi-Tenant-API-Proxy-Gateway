@@ -46,9 +46,14 @@ public class ProxyKeyService {
         ProxyCredential proxyCredential = proxyKeyRepository.findByClientId(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
-        proxyKeyRepository.deleteById(proxyCredential.getId());
+        String proxyKey = generateRawKey();
+        String hashedProxy = HashUtil.hashKey(proxyKey);
 
-        return createKey(client);
+        proxyCredential.setProxyKey(hashedProxy);
+
+        proxyKeyRepository.save(proxyCredential);
+
+        return toDto(proxyKey);
     }
 
     public ProxyKeyResponseDto toDto(String proxyKey) {
