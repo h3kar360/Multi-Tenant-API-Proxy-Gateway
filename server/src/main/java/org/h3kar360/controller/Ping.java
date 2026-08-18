@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ping")
+@RequestMapping("/health")
 public class Ping {
     @GetMapping
-    public String ping() {
-        return "pong";
+    public String health() {
+        return "health";
     }
 }
