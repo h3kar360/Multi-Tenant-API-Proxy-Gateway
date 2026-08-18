@@ -65,9 +65,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(accessToken);
     };
 
-    const logout = (): void => {
-        setToken(null);
-        setClientName(null);
+    const logout = async (): Promise<void> => {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/auth/logout`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                },
+            );
+
+            if (!response.ok)
+                throw new Error(`HTTP Error, status=${response.status}`);
+
+            setToken(null);
+            setClientName(null);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

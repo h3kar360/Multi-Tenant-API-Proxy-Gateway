@@ -10,26 +10,9 @@ const Navbar = () => {
 
     const logoutLogic = async () => {
         setIsLoading(true);
-
-        try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/auth/logout`,
-                {
-                    method: "POST",
-                    credentials: "include",
-                },
-            );
-
-            if (!response.ok)
-                throw new Error(`HTTP Error, status=${response.status}`);
-
-            logout();
-            navigate("/login");
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
+        logout();
+        navigate("/login");
+        setIsLoading(false);
     };
 
     return (
