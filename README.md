@@ -169,7 +169,11 @@ curl -X POST http://localhost:8080/auth/refresh \
 
 ```
 http://localhost:8080/proxy/v1/gateway/{serviceName}/{path}
+```
+
 or (using my deployed server)
+
+```
 https://proxier-tali-backend-db083.containers.snapdeploy.app/proxy/v1/gateway/{serviceName}/{path}
 ```
 
