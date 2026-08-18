@@ -10,4 +10,4 @@ jobs:
         steps:
             - name: Ping backend
               run: |
-                  curl -s https://proxier-tali-backend-db083.containers.snapdeploy.app/ping > /dev/null
+                  curl -s https://proxier-tali-backend-db083.containers.snapdeploy.app/health > /dev/null
