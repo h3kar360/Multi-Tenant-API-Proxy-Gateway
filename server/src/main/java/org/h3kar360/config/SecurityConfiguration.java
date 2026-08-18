@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/proxy/v1/gateway/**").permitAll()
                         .requestMatchers("/health").permitAll()
+                        .requestMatchers("/ping").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
