@@ -159,7 +159,7 @@ curl -X POST http://localhost:8080/auth/refresh \
 | Method        | Header                                | When to Use            |
 | ------------- | ------------------------------------- | ---------------------- |
 | **JWT**       | `Authorization: Bearer <accessToken>` | Dashboard API calls    |
-| **Proxy Key** | `X-Proxy-Key: pk_live_xxx`            | Proxy forwarding calls |
+| **Proxy Key** | `X-Proxy-Key: pk_live_xxx `           | Proxy forwarding calls |
 
 ---
 
