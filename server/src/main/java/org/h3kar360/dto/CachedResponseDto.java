@@ -1,16 +1,18 @@
 package org.h3kar360.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
-@Builder
-@Value
-public class CachedResponseDto {
-    int status;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CachedResponseDto implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    Map<String, String> headers;
+    private Map<String, List<String>> headers;
 
-    byte[] body;
+    private byte[] body;
 }

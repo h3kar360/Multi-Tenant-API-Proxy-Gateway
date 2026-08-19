@@ -42,16 +42,20 @@ public class RedisConfiguration {
     @Value("${redis.port}")
     private int port;
 
-    @Value("${redis.password}")
+    @Value("${redis.password:}")
     private String password;
 
     private RedisClient redisClient() {
-        return RedisClient.create(RedisURI.builder()
+        RedisURI.Builder builder = RedisURI.builder()
                 .withHost(host)
-                .withPort(port)
-                .withSsl(true)
-                .withAuthentication("default", password)
-                .build());
+                .withPort(port);
+
+        if (password != null && !password.isBlank()) {
+            builder.withAuthentication("default", password);
+            builder.withSsl(true);
+        }
+
+        return RedisClient.create(builder.build());
     }
 
     @Bean
@@ -63,7 +67,7 @@ public class RedisConfiguration {
 
         return LettuceBasedProxyManager.builderFor(redisConnection)
                 .withExpirationStrategy(
-                        ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(1L))
+                        ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(5L))
                 ).build();
     }
 
@@ -75,7 +79,13 @@ public class RedisConfiguration {
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10));
+                .entryTtl(Duration.ofMinutes(10))
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())
+                )
+                .serializeValuesWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+                );
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(configuration)

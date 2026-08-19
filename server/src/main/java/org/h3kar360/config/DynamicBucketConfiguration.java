@@ -32,7 +32,10 @@ public class DynamicBucketConfiguration implements Supplier<BucketConfiguration>
         int rateLimitWindow = client.getRateLimitWindow();
 
         return BucketConfiguration.builder()
-                .addLimit(Bandwidth.simple(rateLimit, Duration.ofMinutes(rateLimitWindow)))
+                .addLimit(Bandwidth.builder()
+                        .capacity(rateLimit)
+                        .refillIntervally(rateLimit, Duration.ofMinutes(rateLimitWindow))
+                        .build())
                 .build();
     }
 }

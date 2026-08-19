@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -32,27 +34,41 @@ public class ProxyManagerService {
     public ResponseEntity<byte[]> proxyManager(ProxyRequestDto proxyRequest) {
         final HttpServletRequest request = proxyRequest.getRequest();
         final HttpMethod method = proxyRequest.getMethod();
+        final String proxyKey = proxyRequest.getProxyKey();
 
         String path = request.getRequestURI();
         String query = request.getQueryString();
 
         String url = query == null || query.isEmpty() ? path : path + "?" + query;
+        String cacheKey = url + proxyKey;
+        System.out.println("Cache key: " + cacheKey);
 
         long currTime = System.currentTimeMillis();
 
-        CounterEntry counter = calls.merge(url, new CounterEntry(1, currTime), (oldEntry, newEntry) -> {
+        CounterEntry counter = calls.merge(cacheKey, new CounterEntry(1, currTime), (oldEntry, newEntry) -> {
             oldEntry.count += 1;
             oldEntry.timeStamp = currTime;
             return oldEntry;
         });
 
         if(counter.count >= threshold && method == HttpMethod.GET) {
-            byte[] cachedResponse = proxyServiceCached.forwardRequestCached(url, proxyRequest);
+            CachedResponseDto cachedDto = proxyServiceCached.forwardRequestCached(cacheKey, proxyRequest);
 
-             return ResponseEntity
-                     .ok()
-                     .contentType(MediaType.APPLICATION_JSON)
-                     .body(cachedResponse);
+            if (cachedDto != null && cachedDto.getBody() != null) {
+                HttpHeaders headers = new HttpHeaders();
+
+                // Re-apply preserved response headers dynamically
+                if (cachedDto.getHeaders() != null) {
+                    for (Map.Entry<String, List<String>> entry : cachedDto.getHeaders().entrySet()) {
+                        headers.put(entry.getKey(), entry.getValue());
+                    }
+                }
+
+                return ResponseEntity
+                        .ok()
+                        .headers(headers)
+                        .body(cachedDto.getBody());
+            }
         }
 
         return proxyService.forwardRequest(proxyRequest);

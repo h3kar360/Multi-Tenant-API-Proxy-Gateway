@@ -45,7 +45,7 @@ public class RateLimitAspect {
             Bucket bucket = proxyManager.builder().build(proxyKey, bucketConfiguration);
 
             ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
-            System.out.println(probe.getRemainingTokens());
+            System.out.println("remaining tokens:" + probe.getRemainingTokens());
 
             if(!probe.isConsumed()) {
                 throw new RateLimitException("Rate limit exceeded");
